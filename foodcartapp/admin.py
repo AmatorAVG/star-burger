@@ -6,7 +6,33 @@ from django.utils.html import format_html
 from .models import Product
 from .models import ProductCategory
 from .models import Restaurant
+from .models import Order
 from .models import RestaurantMenuItem
+from .models import OrderItem
+
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    search_fields = [
+        'name',
+        'surname',
+        'address',
+        'cellphone_number',
+    ]
+    list_display = [
+        'name',
+        'surname',
+        'address',
+        'cellphone_number',
+    ]
+    inlines = [
+        OrderItemInline
+    ]
 
 
 class RestaurantMenuItemInline(admin.TabularInline):
