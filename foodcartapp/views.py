@@ -4,11 +4,14 @@ import json
 import pprint
 
 from .models import Product, Order, OrderItem
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
+@api_view(['GET'])
 def banners_list_api(request):
     # FIXME move data to db?
-    return JsonResponse([
+    return Response([
         {
             'title': 'Burger',
             'src': static('burger.jpg'),
@@ -24,12 +27,10 @@ def banners_list_api(request):
             'src': static('tasty.jpg'),
             'text': 'Food is incomplete without a tasty dessert',
         }
-    ], safe=False, json_dumps_params={
-        'ensure_ascii': False,
-        'indent': 4,
-    })
+    ])
 
 
+@api_view(['GET'])
 def product_list_api(request):
     products = Product.objects.select_related('category').available()
 
@@ -52,26 +53,24 @@ def product_list_api(request):
             }
         }
         dumped_products.append(dumped_product)
-    return JsonResponse(dumped_products, safe=False, json_dumps_params={
-        'ensure_ascii': False,
-        'indent': 4,
-    })
+    return Response(dumped_products)
 
 
+@api_view(['POST'])
 def register_order(request):
     try:
-        request_body = json.loads(request.body.decode())
-        pprint.pprint(request_body)
-        order = Order.objects.create(address=request_body.get('address'),
-                             name=request_body.get('firstname'),
-                             surname=request_body.get('lastname'),
-                             cellphone_number=request_body.get('phonenumber'))
-        for order_item in request_body.get('products'):
+        # request_body = json.loads(request.body.decode())
+        pprint.pprint(request.data)
+        order = Order.objects.create(address=request.data.get('address'),
+                             name=request.data.get('firstname'),
+                             surname=request.data.get('lastname'),
+                             cellphone_number=request.data.get('phonenumber'))
+        for order_item in request.data.get('products'):
             OrderItem.objects.create(quantity=order_item.get('quantity'),
                                      order=order,
                                      product_id=order_item.get('product'))
 
-        return JsonResponse({})
+        return Response({'status': 'Order has been created'})
 
     except ValueError:
         return JsonResponse({
