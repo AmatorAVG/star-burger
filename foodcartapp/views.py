@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
-import json
+from rest_framework import status
 import pprint
 
 from .models import Product, Order, OrderItem
@@ -61,11 +61,23 @@ def register_order(request):
     try:
         # request_body = json.loads(request.body.decode())
         pprint.pprint(request.data)
-        order = Order.objects.create(address=request.data.get('address'),
-                             name=request.data.get('firstname'),
-                             surname=request.data.get('lastname'),
-                             cellphone_number=request.data.get('phonenumber'))
-        for order_item in request.data.get('products'):
+        req_data = request.data
+        if 'products' not in req_data:
+            return Response({'error': 'product key is not presented'}, status=status.HTTP_400_BAD_REQUEST)
+        if req_data.get('products') is None:
+            return Response({'error': 'product key is null, list expected'}, status=status.HTTP_400_BAD_REQUEST)
+        if isinstance(req_data.get('products'), str):
+            return Response({'error': 'product key is str, list expected'}, status=status.HTTP_400_BAD_REQUEST)
+        if isinstance(req_data.get('products'), list) and not req_data.get('products'):
+            return Response({'error': 'product list is empty'}, status=status.HTTP_400_BAD_REQUEST)
+        if not isinstance(req_data.get('products'), list):
+            return Response({'error': 'product key is not list'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order = Order.objects.create(address=req_data.get('address'),
+                             name=req_data.get('firstname'),
+                             surname=req_data.get('lastname'),
+                             cellphone_number=req_data.get('phonenumber'))
+        for order_item in req_data.get('products'):
             OrderItem.objects.create(quantity=order_item.get('quantity'),
                                      order=order,
                                      product_id=order_item.get('product'))
@@ -75,6 +87,6 @@ def register_order(request):
     except ValueError:
         return JsonResponse({
             'error': 'Can not load json!',
-        })
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
