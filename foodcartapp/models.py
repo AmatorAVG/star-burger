@@ -5,16 +5,16 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Order(models.Model):
     address = models.CharField('адрес', max_length=255)
-    name = models.CharField('имя', max_length=255)
-    surname = models.CharField('фамилия', max_length=255)
-    cellphone_number = PhoneNumberField('мобильный телефон')
+    firstname = models.CharField('имя', max_length=255)
+    lastname = models.CharField('фамилия', max_length=255)
+    phonenumber = PhoneNumberField('мобильный телефон')
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f"{self.name} {self.surname}, {self.address}"
+        return f"{self.firstname} {self.lastname}, {self.address}"
 
 
 class Restaurant(models.Model):
