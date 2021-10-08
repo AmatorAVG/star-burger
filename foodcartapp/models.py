@@ -16,6 +16,9 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.firstname} {self.lastname}, {self.address}"
 
+    # @property
+    # def value(self):
+    #     return
 
 class Restaurant(models.Model):
     name = models.CharField(

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 from foodcartapp.models import Order
+from django.db.models import Sum, Count, F
 
 
 from foodcartapp.models import Product, Restaurant
@@ -98,6 +99,7 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
+    orders = Order.objects.annotate(value=Sum(F('order_items__quantity') * F('order_items__product__price')))
     return render(request, template_name='order_items.html', context={
-       'order_items': Order.objects.all(),
+       'order_items': orders,
     })
