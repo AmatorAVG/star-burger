@@ -64,11 +64,11 @@ class OrderItemsSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-    products = OrderItemsSerializer(many=True, allow_empty=False)
+    products = OrderItemsSerializer(many=True, allow_empty=False, write_only=True)
 
     class Meta:
         model = Order
-        fields = ['address', 'firstname', 'lastname', 'phonenumber', 'products']
+        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products']
 
 
 @api_view(['POST'])
@@ -88,7 +88,8 @@ def register_order(request):
         order_items= [OrderItem(order=order, **fields) for fields in order_items_fields]
         OrderItem.objects.bulk_create(order_items)
 
-        return Response({'order_id': order.id})
+        order_ser = OrderSerializer(order)
+        return Response(order_ser.data, status=status.HTTP_201_CREATED)
 
     except ValueError:
         return JsonResponse({
