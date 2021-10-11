@@ -154,10 +154,16 @@ class OrderItem(models.Model):
         related_name='order_items',
         verbose_name='продукт',
     )
-
     quantity = models.IntegerField(
         'количество',
         validators=[MinValueValidator(1)])
+    value = models.DecimalField(
+        'стоимость',
+        max_digits=9,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0)]
+    )
 
     class Meta:
         verbose_name = 'элемент заказа'

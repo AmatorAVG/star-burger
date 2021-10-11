@@ -60,7 +60,7 @@ def product_list_api(request):
 class OrderItemsSerializer(ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['product', 'quantity']
+        fields = ['product', 'quantity', 'value']
 
 
 class OrderSerializer(ModelSerializer):
@@ -85,7 +85,9 @@ def register_order(request):
         )
 
         order_items_fields = serializer.validated_data['products']
-        order_items= [OrderItem(order=order, **fields) for fields in order_items_fields]
+        order_items = [OrderItem(order=order, **fields) for fields in order_items_fields]
+        for item in order_items:
+            item.value = item.quantity * item.product.price
         OrderItem.objects.bulk_create(order_items)
 
         order_ser = OrderSerializer(order)
