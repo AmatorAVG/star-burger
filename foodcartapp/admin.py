@@ -26,6 +26,7 @@ class OrderAdmin(admin.ModelAdmin):
         'address',
         'phonenumber',
         'status',
+        'comment',
     ]
     list_display = [
         'firstname',
@@ -33,6 +34,7 @@ class OrderAdmin(admin.ModelAdmin):
         'address',
         'phonenumber',
         'status',
+        'comment',
     ]
     inlines = [
         OrderItemInline

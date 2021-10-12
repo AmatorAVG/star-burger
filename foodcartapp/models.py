@@ -13,6 +13,7 @@ class Order(models.Model):
     firstname = models.CharField('имя', max_length=255)
     lastname = models.CharField('фамилия', max_length=255)
     phonenumber = PhoneNumberField('мобильный телефон')
+    comment = models.TextField('комментарий', blank=True)
 
     class Meta:
         verbose_name = 'Заказ'
@@ -21,9 +22,6 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.firstname} {self.lastname}, {self.address}"
 
-    # @property
-    # def value(self):
-    #     return
 
 class Restaurant(models.Model):
     name = models.CharField(

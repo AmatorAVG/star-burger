@@ -69,7 +69,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products', 'status']
+        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products', 'status', 'comment']
 
 
 @api_view(['POST'])
