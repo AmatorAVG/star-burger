@@ -25,12 +25,14 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'address',
         'phonenumber',
+        'status',
     ]
     list_display = [
         'firstname',
         'lastname',
         'address',
         'phonenumber',
+        'status',
     ]
     inlines = [
         OrderItemInline

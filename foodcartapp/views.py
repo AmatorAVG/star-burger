@@ -69,7 +69,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products']
+        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products', 'status']
 
 
 @api_view(['POST'])
@@ -83,6 +83,7 @@ def register_order(request):
                 firstname=serializer.validated_data['firstname'],
                 lastname=serializer.validated_data['lastname'],
                 phonenumber=serializer.validated_data['phonenumber'],
+                status='N',
             )
 
             order_items_fields = serializer.validated_data['products']

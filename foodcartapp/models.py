@@ -4,6 +4,11 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Order(models.Model):
+    STATUSES = (
+        ('N', 'Необработанный'),
+        ('C', 'Выполненный'),
+    )
+    status = models.CharField(max_length=2, choices=STATUSES, default='N')
     address = models.CharField('адрес', max_length=255)
     firstname = models.CharField('имя', max_length=255)
     lastname = models.CharField('фамилия', max_length=255)
