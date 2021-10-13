@@ -8,7 +8,14 @@ class Order(models.Model):
         ('N', 'Необработанный'),
         ('C', 'Выполненный'),
     )
+    PAYMENT = (
+        ('C', 'Наличностью'),
+        ('E', 'Электронно'),
+    )
+
     status = models.CharField(max_length=2, choices=STATUSES, default='N')
+    payment = models.CharField(max_length=2, choices=PAYMENT, default='C')
+
     address = models.CharField('адрес', max_length=255)
     firstname = models.CharField('имя', max_length=255)
     lastname = models.CharField('фамилия', max_length=255)

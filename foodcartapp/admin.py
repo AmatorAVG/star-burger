@@ -30,6 +30,7 @@ class OrderAdmin(admin.ModelAdmin):
         'registered',
         'called',
         'delivered',
+        'payment',
     ]
     list_display = [
         'firstname',
@@ -41,6 +42,7 @@ class OrderAdmin(admin.ModelAdmin):
         'registered',
         'called',
         'delivered',
+        'payment',
     ]
     inlines = [
         OrderItemInline
