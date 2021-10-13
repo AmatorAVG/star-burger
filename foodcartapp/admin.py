@@ -27,6 +27,9 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'status',
         'comment',
+        'registered',
+        'called',
+        'delivered',
     ]
     list_display = [
         'firstname',
@@ -35,10 +38,15 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'status',
         'comment',
+        'registered',
+        'called',
+        'delivered',
     ]
     inlines = [
         OrderItemInline
     ]
+
+    readonly_fields = ('registered',)
 
     def response_post_save_change(self, request, obj):
         res = super(OrderAdmin, self).response_post_save_change(request, obj)

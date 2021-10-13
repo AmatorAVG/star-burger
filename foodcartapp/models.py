@@ -15,6 +15,10 @@ class Order(models.Model):
     phonenumber = PhoneNumberField('мобильный телефон')
     comment = models.TextField('комментарий', blank=True)
 
+    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, null=True)
+    called = models.DateTimeField('позвонить', blank=True, null=True)
+    delivered = models.DateTimeField('доставлен', blank=True, null=True)
+
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
