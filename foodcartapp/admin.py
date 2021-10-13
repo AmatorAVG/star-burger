@@ -11,6 +11,7 @@ from .models import Restaurant
 from .models import Order
 from .models import RestaurantMenuItem
 from .models import OrderItem
+from django.db.models import Q
 
 
 class OrderItemInline(admin.TabularInline):
@@ -31,6 +32,7 @@ class OrderAdmin(admin.ModelAdmin):
         'called',
         'delivered',
         'payment',
+        'restaurant',
     ]
     list_display = [
         'firstname',
@@ -43,12 +45,37 @@ class OrderAdmin(admin.ModelAdmin):
         'called',
         'delivered',
         'payment',
+        'restaurant',
     ]
     inlines = [
         OrderItemInline
     ]
 
     readonly_fields = ('registered',)
+
+    my_id_for_formfield = None
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj:
+            self.my_id_for_formfield = obj.id
+        return super(OrderAdmin, self).get_form(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "restaurant":
+
+            order_products = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=self.my_id_for_formfield))
+            restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_products, availability=True))
+            burger_restaurants = [{rest_item.restaurant.id for rest_item in restaurant_menu if product == rest_item.product_id} for product in order_products]
+
+            if len(burger_restaurants):
+                total_restaurants = burger_restaurants[0]
+                for burger_restaurant in burger_restaurants:
+                    total_restaurants &= burger_restaurant
+            else:
+                total_restaurants = set()
+            kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurants)
+
+        return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def response_post_save_change(self, request, obj):
         res = super(OrderAdmin, self).response_post_save_change(request, obj)

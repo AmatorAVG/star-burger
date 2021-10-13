@@ -3,6 +3,30 @@ from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class Restaurant(models.Model):
+    name = models.CharField(
+        'название',
+        max_length=50
+    )
+    address = models.CharField(
+        'адрес',
+        max_length=100,
+        blank=True,
+    )
+    contact_phone = models.CharField(
+        'контактный телефон',
+        max_length=50,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = 'ресторан'
+        verbose_name_plural = 'рестораны'
+
+    def __str__(self):
+        return self.name
+
+
 class Order(models.Model):
     STATUSES = (
         ('N', 'Необработанный'),
@@ -26,36 +50,21 @@ class Order(models.Model):
     called = models.DateTimeField('позвонить', blank=True, null=True)
     delivered = models.DateTimeField('доставлен', blank=True, null=True)
 
+    restaurant = models.ForeignKey(
+        Restaurant,
+        related_name='restaraunts',
+        verbose_name="ресторан",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
         return f"{self.firstname} {self.lastname}, {self.address}"
-
-
-class Restaurant(models.Model):
-    name = models.CharField(
-        'название',
-        max_length=50
-    )
-    address = models.CharField(
-        'адрес',
-        max_length=100,
-        blank=True,
-    )
-    contact_phone = models.CharField(
-        'контактный телефон',
-        max_length=50,
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = 'ресторан'
-        verbose_name_plural = 'рестораны'
-
-    def __str__(self):
-        return self.name
 
 
 class ProductQuerySet(models.QuerySet):
