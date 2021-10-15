@@ -11,7 +11,6 @@ from .models import Restaurant
 from .models import Order
 from .models import RestaurantMenuItem
 from .models import OrderItem
-from django.db.models import Q
 
 
 class OrderItemInline(admin.TabularInline):

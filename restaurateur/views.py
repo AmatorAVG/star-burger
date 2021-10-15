@@ -6,11 +6,13 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from foodcartapp.models import Order
-from django.db.models import Sum, Count, F
-
+from foodcartapp.models import Order, OrderItem, Restaurant, RestaurantMenuItem
+from django.db.models import Sum, F
 
 from foodcartapp.models import Product, Restaurant
+import requests
+from django.conf import settings
+from geopy import distance
 
 
 class Login(forms.Form):
@@ -97,9 +99,58 @@ def view_restaurants(request):
     })
 
 
+def fetch_coordinates(apikey, address):
+    base_url = "https://geocode-maps.yandex.ru/1.x"
+    response = requests.get(base_url, params={
+        "geocode": address,
+        "apikey": apikey,
+        "format": "json",
+    })
+    response.raise_for_status()
+    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+
+    if not found_places:
+        return None
+
+    most_relevant = found_places[0]
+    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
+    return float(lat), float(lon)
+
+
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
+    YANDEX_KEY = getattr(settings, "YANDEX_KEY", None)
+
+    order_items = OrderItem.objects.values_list('order_id', 'product_id')
+    restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
+
     orders = Order.objects.annotate(value=Sum(F('order_items__value')))
+    for order in orders:
+        order_products = [item[1] for item in order_items if item[0] == order.id]
+
+        burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product == rest_item.product_id}
+                              for product in order_products]
+
+        if len(burger_restaurants):
+            total_restaurants = burger_restaurants[0]
+            for burger_restaurant in burger_restaurants:
+                total_restaurants &= burger_restaurant
+            order.restaurants = list()
+
+            for rest in total_restaurants:
+                rest_coord = fetch_coordinates(YANDEX_KEY, rest.address)
+                if rest_coord == None:
+                    order.restaurants.append([f'{rest} - адрес ресторана не найден', 999999])
+                    continue
+                order_coord = fetch_coordinates(YANDEX_KEY, order.address)
+                if order_coord == None:
+                    order.restaurants.append([f'{rest} - адрес заказа не найден', 999999])
+                    continue
+                order_dist = distance.distance(rest_coord, order_coord).km
+                order.restaurants.append([f'{rest} - {round(order_dist, 3)} км.', order_dist])
+            order.restaurants.sort(key=lambda dist: dist[1])
+        else:
+            order.restaurants = set()
     return render(request, template_name='order_items.html', context={
        'order_items': orders,
     })
