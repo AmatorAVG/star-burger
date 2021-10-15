@@ -6,13 +6,15 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from foodcartapp.models import Order, OrderItem, Restaurant, RestaurantMenuItem
+from foodcartapp.models import Order, OrderItem, RestaurantMenuItem
+from places.models import Place
 from django.db.models import Sum, F
 
 from foodcartapp.models import Product, Restaurant
 import requests
 from django.conf import settings
 from geopy import distance
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Login(forms.Form):
@@ -100,20 +102,29 @@ def view_restaurants(request):
 
 
 def fetch_coordinates(apikey, address):
-    base_url = "https://geocode-maps.yandex.ru/1.x"
-    response = requests.get(base_url, params={
-        "geocode": address,
-        "apikey": apikey,
-        "format": "json",
-    })
-    response.raise_for_status()
-    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+    try:
+        place = Place.objects.get(address=address)
+        lon = place.coordinates_lng
+        lat = place.coordinates_lat
+    except ObjectDoesNotExist:
+        base_url = "https://geocode-maps.yandex.ru/1.x"
+        response = requests.get(base_url, params={
+            "geocode": address,
+            "apikey": apikey,
+            "format": "json",
+        })
+        response.raise_for_status()
+        found_places = response.json()['response']['GeoObjectCollection']['featureMember']
 
-    if not found_places:
-        return None
+        if not found_places:
+            return None
 
-    most_relevant = found_places[0]
-    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
+        most_relevant = found_places[0]
+        lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
+
+        place = Place.objects.create(address=address, coordinates_lat=float(lat), coordinates_lng=float(lon))
+        place.save()
+
     return float(lat), float(lon)
 
 
@@ -139,11 +150,11 @@ def view_orders(request):
 
             for rest in total_restaurants:
                 rest_coord = fetch_coordinates(YANDEX_KEY, rest.address)
-                if rest_coord == None:
+                if rest_coord is None:
                     order.restaurants.append([f'{rest} - адрес ресторана не найден', 999999])
                     continue
                 order_coord = fetch_coordinates(YANDEX_KEY, order.address)
-                if order_coord == None:
+                if order_coord is None:
                     order.restaurants.append([f'{rest} - адрес заказа не найден', 999999])
                     continue
                 order_dist = distance.distance(rest_coord, order_coord).km
