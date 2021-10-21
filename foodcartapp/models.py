@@ -37,18 +37,18 @@ class Order(models.Model):
         ('E', 'Электронно'),
     )
 
-    status = models.CharField(max_length=2, choices=STATUSES, default='N')
-    payment = models.CharField(max_length=2, choices=PAYMENT, default='C')
+    status = models.CharField(max_length=2, choices=STATUSES, default='N', db_index=True)
+    payment = models.CharField(max_length=2, choices=PAYMENT, default='C', db_index=True)
 
     address = models.CharField('адрес', max_length=255)
     firstname = models.CharField('имя', max_length=255)
     lastname = models.CharField('фамилия', max_length=255)
-    phonenumber = PhoneNumberField('мобильный телефон')
+    phonenumber = PhoneNumberField('мобильный телефон', db_index=True)
     comment = models.TextField('комментарий', blank=True)
 
-    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, null=True)
-    called = models.DateTimeField('позвонить', blank=True, null=True)
-    delivered = models.DateTimeField('доставлен', blank=True, null=True)
+    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, null=True, db_index=True)
+    called = models.DateTimeField('позвонить', blank=True, null=True, db_index=True)
+    delivered = models.DateTimeField('доставлен', blank=True, null=True, db_index=True)
 
     restaurant = models.ForeignKey(
         Restaurant,
