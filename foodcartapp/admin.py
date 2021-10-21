@@ -27,10 +27,10 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'status',
         'comment',
-        'registered',
-        'called',
-        'delivered',
-        'payment',
+        'registered_at',
+        'called_at',
+        'delivered_at',
+        'payment_method',
         'restaurant',
     ]
     list_display = [
@@ -40,17 +40,17 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'status',
         'comment',
-        'registered',
-        'called',
-        'delivered',
-        'payment',
+        'registered_at',
+        'called_at',
+        'delivered_at',
+        'payment_method',
         'restaurant',
     ]
     inlines = [
         OrderItemInline
     ]
 
-    readonly_fields = ('registered',)
+    readonly_fields = ('registered_at',)
 
     my_id_for_formfield = None
 

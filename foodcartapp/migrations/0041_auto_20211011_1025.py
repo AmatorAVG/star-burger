@@ -7,7 +7,7 @@ def calculate_order_value(apps, schema_editor):
     OrderItem = apps.get_model('foodcartapp', 'OrderItem')
     order_items_set = OrderItem.objects.all()
     for order_item in order_items_set.iterator():
-        order_item.value = order_item.quantity * order_item.product.price
+        order_item.cost = order_item.quantity * order_item.product.price
         order_item.save()
 
 

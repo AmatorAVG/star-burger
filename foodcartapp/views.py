@@ -70,7 +70,7 @@ class OrderSerializer(ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products', 'status', 'comment',
-                  'registered', 'called', 'delivered', 'payment']
+                  'registered_at', 'called_at', 'delivered_at', 'payment_method']
 
 
 @api_view(['POST'])
@@ -88,7 +88,7 @@ def register_order(request):
         order_items_fields = serializer.validated_data['products']
         order_items = [OrderItem(order=order, **fields) for fields in order_items_fields]
         for item in order_items:
-            item.value = item.quantity * item.product.price
+            item.cost = item.quantity * item.product.price
         OrderItem.objects.bulk_create(order_items)
 
     order_ser = OrderSerializer(order)

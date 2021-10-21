@@ -140,7 +140,7 @@ def view_orders(request):
     order_items = OrderItem.objects.values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
-    orders = Order.objects.annotate(value=Sum(F('order_items__value')))
+    orders = Order.objects.annotate(cost=Sum(F('order_items__cost')))
     for order in orders:
         order_products = [item[1] for item in order_items if item[0] == order.id]
 

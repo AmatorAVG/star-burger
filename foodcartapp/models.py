@@ -38,7 +38,7 @@ class Order(models.Model):
     )
 
     status = models.CharField(max_length=2, choices=STATUSES, default='N', db_index=True)
-    payment = models.CharField(max_length=2, choices=PAYMENT, null=True, db_index=True)
+    payment_method = models.CharField(max_length=2, choices=PAYMENT, null=True, db_index=True)
 
     address = models.CharField('адрес', max_length=255)
     firstname = models.CharField('имя', max_length=255)
@@ -46,9 +46,9 @@ class Order(models.Model):
     phonenumber = PhoneNumberField('мобильный телефон', db_index=True)
     comment = models.TextField('комментарий', blank=True)
 
-    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, db_index=True)
-    called = models.DateTimeField('позвонить', blank=True, null=True, db_index=True)
-    delivered = models.DateTimeField('доставлен', blank=True, null=True, db_index=True)
+    registered_at = models.DateTimeField('зарегистрирован', auto_now_add=True, db_index=True)
+    called_at = models.DateTimeField('позвонить', blank=True, null=True, db_index=True)
+    delivered_at = models.DateTimeField('доставлен', blank=True, null=True, db_index=True)
 
     restaurant = models.ForeignKey(
         Restaurant,
@@ -180,7 +180,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(
         'количество',
         validators=[MinValueValidator(1)])
-    value = models.DecimalField(
+    cost = models.DecimalField(
         'стоимость',
         max_digits=9,
         decimal_places=2,
