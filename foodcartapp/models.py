@@ -52,7 +52,7 @@ class Order(models.Model):
 
     restaurant = models.ForeignKey(
         Restaurant,
-        related_name='restaraunts',
+        related_name='orders',
         verbose_name="ресторан",
         on_delete=models.CASCADE,
         blank=True,
