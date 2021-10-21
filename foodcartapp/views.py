@@ -61,7 +61,7 @@ def product_list_api(request):
 class OrderItemsSerializer(ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['product', 'quantity', 'value']
+        fields = ['product', 'quantity']
 
 
 class OrderSerializer(ModelSerializer):
@@ -75,29 +75,21 @@ class OrderSerializer(ModelSerializer):
 
 @api_view(['POST'])
 def register_order(request):
-    try:
-        serializer = OrderSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        with transaction.atomic():
-            order = Order.objects.create(
-                address=serializer.validated_data['address'],
-                firstname=serializer.validated_data['firstname'],
-                lastname=serializer.validated_data['lastname'],
-                phonenumber=serializer.validated_data['phonenumber'],
-            )
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    with transaction.atomic():
+        order = Order.objects.create(
+            address=serializer.validated_data['address'],
+            firstname=serializer.validated_data['firstname'],
+            lastname=serializer.validated_data['lastname'],
+            phonenumber=serializer.validated_data['phonenumber'],
+        )
 
-            order_items_fields = serializer.validated_data['products']
-            order_items = [OrderItem(order=order, **fields) for fields in order_items_fields]
-            for item in order_items:
-                item.value = item.quantity * item.product.price
-            OrderItem.objects.bulk_create(order_items)
+        order_items_fields = serializer.validated_data['products']
+        order_items = [OrderItem(order=order, **fields) for fields in order_items_fields]
+        for item in order_items:
+            item.value = item.quantity * item.product.price
+        OrderItem.objects.bulk_create(order_items)
 
-        order_ser = OrderSerializer(order)
-        return Response(order_ser.data, status=status.HTTP_201_CREATED)
-
-    except ValueError:
-        return JsonResponse({
-            'error': 'Can not load json!',
-        }, status=status.HTTP_400_BAD_REQUEST)
-
-
+    order_ser = OrderSerializer(order)
+    return Response(order_ser.data, status=status.HTTP_201_CREATED)
