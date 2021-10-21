@@ -46,7 +46,7 @@ class Order(models.Model):
     phonenumber = PhoneNumberField('мобильный телефон', db_index=True)
     comment = models.TextField('комментарий', blank=True)
 
-    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, null=True, db_index=True)
+    registered = models.DateTimeField('зарегистрирован', auto_now_add=True, db_index=True)
     called = models.DateTimeField('позвонить', blank=True, null=True, db_index=True)
     delivered = models.DateTimeField('доставлен', blank=True, null=True, db_index=True)
 
