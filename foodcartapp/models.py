@@ -184,7 +184,6 @@ class OrderItem(models.Model):
         'стоимость',
         max_digits=9,
         decimal_places=2,
-        default=0,
         validators=[MinValueValidator(0)]
     )
 
