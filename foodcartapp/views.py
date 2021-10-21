@@ -69,8 +69,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products', 'status', 'comment',
-                  'registered_at', 'called_at', 'delivered_at', 'payment_method']
+        fields = ['id', 'address', 'firstname', 'lastname', 'phonenumber', 'products']
 
 
 @api_view(['POST'])
@@ -91,5 +90,4 @@ def register_order(request):
             item.cost = item.quantity * item.product.price
         OrderItem.objects.bulk_create(order_items)
 
-    order_ser = OrderSerializer(order)
-    return Response(order_ser.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
