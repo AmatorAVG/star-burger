@@ -106,6 +106,9 @@ def fetch_coordinates(apikey, address):
         place = Place.objects.get(address=address)
         lon = place.coordinates_lng
         lat = place.coordinates_lat
+        if None in (lon, lat):
+            return None
+
     except ObjectDoesNotExist:
         base_url = "https://geocode-maps.yandex.ru/1.x"
         response = requests.get(base_url, params={
@@ -117,6 +120,8 @@ def fetch_coordinates(apikey, address):
         found_places = response.json()['response']['GeoObjectCollection']['featureMember']
 
         if not found_places:
+            place = Place.objects.create(address=address, coordinates_lat=None, coordinates_lng=None)
+            place.save()
             return None
 
         most_relevant = found_places[0]
