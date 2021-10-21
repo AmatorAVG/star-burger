@@ -38,7 +38,7 @@ class Order(models.Model):
     )
 
     status = models.CharField(max_length=2, choices=STATUSES, default='N', db_index=True)
-    payment = models.CharField(max_length=2, choices=PAYMENT, default='C', db_index=True)
+    payment = models.CharField(max_length=2, choices=PAYMENT, null=True, db_index=True)
 
     address = models.CharField('адрес', max_length=255)
     firstname = models.CharField('имя', max_length=255)
