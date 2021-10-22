@@ -90,4 +90,5 @@ def register_order(request):
             item.cost = item.quantity * item.product.price
         OrderItem.objects.bulk_create(order_items)
 
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    order_ser = OrderSerializer(order)
+    return Response(order_ser.data, status=status.HTTP_201_CREATED)
