@@ -69,7 +69,7 @@ class OrderAdmin(admin.ModelAdmin):
                 total_restaurants = set()
             kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurants)
 
-        return super(OrderAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def response_post_save_change(self, request, obj):
         res = super().response_post_save_change(request, obj)
