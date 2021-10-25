@@ -57,17 +57,17 @@ class OrderAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "restaurant":
 
-            order_products = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=self.my_id_for_formfield))
-            restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_products, availability=True))
-            burger_restaurants = [{rest_item.restaurant.id for rest_item in restaurant_menu if product == rest_item.product_id} for product in order_products]
+            order_products_id = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=self.my_id_for_formfield))
+            restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_products_id, availability=True))
+            burger_restaurants_id = [{rest_item.restaurant.id for rest_item in restaurant_menu if product_id == rest_item.product_id} for product_id in order_products_id]
 
-            if len(burger_restaurants):
-                total_restaurants = burger_restaurants[0]
-                for burger_restaurant in burger_restaurants:
-                    total_restaurants &= burger_restaurant
+            if len(burger_restaurants_id):
+                total_restaurants_id = burger_restaurants_id[0]
+                for burger_restaurant_id in burger_restaurants_id:
+                    total_restaurants_id &= burger_restaurant_id
             else:
-                total_restaurants = set()
-            kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurants)
+                total_restaurants_id = set()
+            kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurants_id)
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

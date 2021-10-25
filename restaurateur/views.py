@@ -140,12 +140,12 @@ def view_orders(request):
     order_items = OrderItem.objects.filter(order__status='N').values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
-    orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
-    for order in orders:
-        order_products = [item[1] for item in order_items if item[0] == order.id]
+    raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
+    for order in raw_orders:
+        order_products_id = [item[1] for item in order_items if item[0] == order.id]
 
-        burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product == rest_item.product_id}
-                              for product in order_products]
+        burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
+                              for product_id in order_products_id]
 
         if len(burger_restaurants):
             total_restaurants = burger_restaurants[0]
@@ -168,5 +168,5 @@ def view_orders(request):
         else:
             order.restaurants = set()
     return render(request, template_name='order_items.html', context={
-       'order_items': orders,
+       'order_items': raw_orders,
     })
