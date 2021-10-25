@@ -147,7 +147,8 @@ def view_orders(request):
         burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
                               for product_id in order_products_id]
 
-        if len(burger_restaurants):
+        order.restaurants = set()
+        if burger_restaurants:
             total_restaurants = burger_restaurants[0]
             for burger_restaurant in burger_restaurants:
                 total_restaurants &= burger_restaurant
@@ -165,8 +166,7 @@ def view_orders(request):
                 order_dist = distance.distance(rest_coord, order_coord).km
                 order.restaurants.append([f'{rest} - {round(order_dist, 3)} км.', order_dist])
             order.restaurants.sort(key=lambda dist: dist[1])
-        else:
-            order.restaurants = set()
+
     return render(request, template_name='order_items.html', context={
        'order_items': raw_orders,
     })
