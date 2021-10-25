@@ -147,12 +147,9 @@ def view_orders(request):
         burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
                               for product_id in order_products_id]
 
-        order.restaurants = set()
+        order.restaurants = list()
         if burger_restaurants:
-            total_restaurants = burger_restaurants[0]
-            for burger_restaurant in burger_restaurants:
-                total_restaurants &= burger_restaurant
-            order.restaurants = list()
+            total_restaurants = set.intersection(*burger_restaurants)
 
             for rest in total_restaurants:
                 rest_coord = fetch_coordinates(YANDEX_KEY, rest.address)

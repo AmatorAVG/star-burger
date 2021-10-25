@@ -61,12 +61,8 @@ class OrderAdmin(admin.ModelAdmin):
             restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_products_id, availability=True))
             burger_restaurants_id = [{rest_item.restaurant.id for rest_item in restaurant_menu if product_id == rest_item.product_id} for product_id in order_products_id]
 
-            if len(burger_restaurants_id):
-                total_restaurants_id = burger_restaurants_id[0]
-                for burger_restaurant_id in burger_restaurants_id:
-                    total_restaurants_id &= burger_restaurant_id
-            else:
-                total_restaurants_id = set()
+            total_restaurants_id = set.intersection(*burger_restaurants_id)
+
             kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurants_id)
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
