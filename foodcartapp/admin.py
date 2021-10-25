@@ -25,13 +25,8 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'address',
         'phonenumber',
-        'status',
         'comment',
-        'registered_at',
-        'called_at',
-        'delivered_at',
         'payment_method',
-        'restaurant',
     ]
     list_display = [
         'firstname',
