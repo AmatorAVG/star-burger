@@ -135,7 +135,7 @@ def fetch_coordinates(apikey, address):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    YANDEX_KEY = getattr(settings, "YANDEX_KEY", None)
+    YANDEX_KEY = getattr(settings, "YANDEX_KEY")
 
     order_items = OrderItem.objects.values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
