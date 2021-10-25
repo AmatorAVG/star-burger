@@ -76,7 +76,7 @@ class OrderAdmin(admin.ModelAdmin):
         if "next" in request.GET:
             if url_has_allowed_host_and_scheme(request.GET['next'], None):
                 return HttpResponseRedirect(request.GET['next'])
-            raise
+            return HttpResponseRedirect(reverse('start_page'))
         return res
 
 
