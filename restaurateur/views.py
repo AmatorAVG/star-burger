@@ -137,7 +137,7 @@ def fetch_coordinates(apikey, address):
 def view_orders(request):
     YANDEX_KEY = getattr(settings, "YANDEX_KEY")
 
-    order_items = OrderItem.objects.values_list('order_id', 'product_id')
+    order_items = OrderItem.objects.filter(order__status='N').values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
     orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
