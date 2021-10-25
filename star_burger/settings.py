@@ -14,7 +14,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 SECRET_KEY = env('SECRET_KEY', 'etirgvonenrfnoerngorenogneongg334g')
 DEBUG = env.bool('DEBUG', True)
-YANDEX_KEY = env('YANDEX_KEY', 'insert_your_key')
+YANDEX_KEY = env('YANDEX_KEY')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
 
