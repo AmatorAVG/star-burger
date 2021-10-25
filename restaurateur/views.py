@@ -153,11 +153,11 @@ def view_orders(request):
 
             for rest in total_restaurants:
                 rest_coord = fetch_coordinates(YANDEX_KEY, rest.address)
-                if rest_coord is None:
+                if not rest_coord:
                     order.restaurants.append([f'{rest} - адрес ресторана не найден', 999999])
                     continue
                 order_coord = fetch_coordinates(YANDEX_KEY, order.address)
-                if order_coord is None:
+                if not order_coord:
                     order.restaurants.append([f'{rest} - адрес заказа не найден', 999999])
                     continue
                 order_dist = distance.distance(rest_coord, order_coord).km
