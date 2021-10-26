@@ -47,17 +47,15 @@ class OrderAdmin(admin.ModelAdmin):
 
     readonly_fields = ('registered_at',)
 
-    my_id_for_formfield = None
-
     def get_form(self, request, obj=None, **kwargs):
         if obj:
-            self.my_id_for_formfield = obj.id
+            request.id_for_formfield = obj.id
         return super(OrderAdmin, self).get_form(request, obj, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "restaurant":
 
-            order_products_id = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=self.my_id_for_formfield))
+            order_products_id = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=request.id_for_formfield))
             restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_products_id, availability=True))
             burger_restaurants_id = [{rest_item.restaurant.id for rest_item in restaurant_menu if product_id == rest_item.product_id} for product_id in order_products_id]
 
