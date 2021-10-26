@@ -142,7 +142,7 @@ def view_orders(request):
 
     raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
     for order in raw_orders:
-        order_products_id = [item[1] for item in order_items if item[0] == order.id]
+        order_products_id = [product_id for order_id, product_id in order_items if order_id == order.id]
 
         burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
                               for product_id in order_products_id]
