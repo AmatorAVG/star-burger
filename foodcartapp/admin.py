@@ -26,8 +26,10 @@ class OrderAdmin(admin.ModelAdmin):
         'address',
         'phonenumber',
         'comment',
-        'payment_method',
     ]
+
+    list_filter = ['payment_method']
+
     list_display = [
         'firstname',
         'lastname',
