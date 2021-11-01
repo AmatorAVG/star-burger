@@ -52,7 +52,7 @@ class OrderAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if obj:
             request.id_for_formfield = obj.id
-        return super(OrderAdmin, self).get_form(request, obj, **kwargs)
+        return super().get_form(request, obj, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "restaurant":
