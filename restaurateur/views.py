@@ -128,8 +128,8 @@ def fetch_coordinates(apikey, address, places_list: list):
         lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
 
         new_address = {'address': address, 'coordinates_lat':float(lat), 'coordinates_lng':float(lon)}
-        place = Place.objects.create(**new_address)
-        place.save()
+        Place.objects.create(**new_address)
+
         places_list.append(new_address)
 
     return float(lat), float(lon)
