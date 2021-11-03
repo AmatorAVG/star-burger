@@ -109,28 +109,29 @@ def fetch_coordinates(apikey, address, places_list: list):
         lat = place['coordinates_lat']
         if None in (lon, lat):
             return None
-    else:
-        base_url = "https://geocode-maps.yandex.ru/1.x"
-        response = requests.get(base_url, params={
-            "geocode": address,
-            "apikey": apikey,
-            "format": "json",
-        })
-        response.raise_for_status()
-        found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+        return float(lat), float(lon)
 
-        if not found_places:
-            place = Place.objects.create(address=address, coordinates_lat=None, coordinates_lng=None)
-            place.save()
-            return None
+    base_url = "https://geocode-maps.yandex.ru/1.x"
+    response = requests.get(base_url, params={
+        "geocode": address,
+        "apikey": apikey,
+        "format": "json",
+    })
+    response.raise_for_status()
+    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
 
-        most_relevant = found_places[0]
-        lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
+    if not found_places:
+        place = Place.objects.create(address=address, coordinates_lat=None, coordinates_lng=None)
+        place.save()
+        return None
 
-        new_address = {'address': address, 'coordinates_lat':float(lat), 'coordinates_lng':float(lon)}
-        Place.objects.create(**new_address)
+    most_relevant = found_places[0]
+    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
 
-        places_list.append(new_address)
+    new_address = {'address': address, 'coordinates_lat':float(lat), 'coordinates_lng':float(lon)}
+    Place.objects.create(**new_address)
+
+    places_list.append(new_address)
 
     return float(lat), float(lon)
 
