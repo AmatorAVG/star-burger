@@ -14,7 +14,6 @@ from foodcartapp.models import Product, Restaurant
 import requests
 from django.conf import settings
 from geopy import distance
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class Login(forms.Form):
@@ -101,7 +100,8 @@ def view_restaurants(request):
     })
 
 
-def fetch_coordinates(apikey, address, places_list: list):
+def fetch_coordinates(apikey, address, places_list=[]):
+
     place = next((item for item in places_list if item['address'] == address), False)
 
     if place:
