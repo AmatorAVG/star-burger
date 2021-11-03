@@ -143,7 +143,8 @@ def view_orders(request):
     order_items = OrderItem.objects.filter(order__status='N').values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
-    raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
+    # raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
+    raw_orders = Order.orders.raw()
 
     addresses = set(raw_orders.values_list('address', flat=True))
     addresses.update(set(Restaurant.objects.values_list('address', flat=True)))

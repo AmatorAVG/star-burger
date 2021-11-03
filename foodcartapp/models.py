@@ -1,6 +1,18 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+from django.db.models import Sum, F
+
+
+class RestaurantQuerySet(models.QuerySet):
+    def available(self, order_id):
+        order_product_ids = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=order_id))
+        restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_product_ids, availability=True))
+        burger_restaurant_ids = [
+            {rest_item.restaurant.id for rest_item in restaurant_menu if product_id == rest_item.product_id} for
+            product_id in order_product_ids]
+        total_restaurant_ids = set.intersection(*burger_restaurant_ids)
+        return Restaurant.objects.filter(id__in=total_restaurant_ids)
 
 
 class Restaurant(models.Model):
@@ -19,12 +31,20 @@ class Restaurant(models.Model):
         blank=True,
     )
 
+    restaurants = RestaurantQuerySet.as_manager()
+    objects = models.Manager()
+
     class Meta:
         verbose_name = 'ресторан'
         verbose_name_plural = 'рестораны'
 
     def __str__(self):
         return self.name
+
+
+class OrderQuerySet(models.QuerySet):
+    def raw(self):
+        return self.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
 
 
 class Order(models.Model):
@@ -58,6 +78,9 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
+
+    orders = OrderQuerySet.as_manager()
+    objects = models.Manager()
 
     class Meta:
         verbose_name = 'Заказ'
