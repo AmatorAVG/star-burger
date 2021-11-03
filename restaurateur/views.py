@@ -151,10 +151,10 @@ def view_orders(request):
     places = list(Place.objects.filter(address__in=addresses).values('address', 'coordinates_lat', 'coordinates_lng'))
 
     for order in raw_orders:
-        order_products_id = [product_id for order_id, product_id in order_items if order_id == order.id]
+        order_product_ids = [product_id for order_id, product_id in order_items if order_id == order.id]
 
         burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
-                              for product_id in order_products_id]
+                              for product_id in order_product_ids]
 
         order.restaurants = list()
         if burger_restaurants:
