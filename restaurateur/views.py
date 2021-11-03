@@ -7,11 +7,9 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 from foodcartapp.models import Order, OrderItem, RestaurantMenuItem
-from places.models import Place
-from django.db.models import Sum, F
+from places.models import Place, fetch_coordinates
 
 from foodcartapp.models import Product, Restaurant
-import requests
 from django.conf import settings
 from geopy import distance
 
@@ -100,42 +98,6 @@ def view_restaurants(request):
     })
 
 
-def fetch_coordinates(apikey, address, places_list=[]):
-
-    place = next((item for item in places_list if item['address'] == address), False)
-
-    if place:
-        lon = place['coordinates_lng']
-        lat = place['coordinates_lat']
-        if None in (lon, lat):
-            return None
-        return float(lat), float(lon)
-
-    base_url = "https://geocode-maps.yandex.ru/1.x"
-    response = requests.get(base_url, params={
-        "geocode": address,
-        "apikey": apikey,
-        "format": "json",
-    })
-    response.raise_for_status()
-    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
-
-    if not found_places:
-        place = Place.objects.create(address=address, coordinates_lat=None, coordinates_lng=None)
-        place.save()
-        return None
-
-    most_relevant = found_places[0]
-    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
-
-    new_address = {'address': address, 'coordinates_lat':float(lat), 'coordinates_lng':float(lon)}
-    Place.objects.create(**new_address)
-
-    places_list.append(new_address)
-
-    return float(lat), float(lon)
-
-
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     YANDEX_KEY = getattr(settings, "YANDEX_KEY")
@@ -143,7 +105,6 @@ def view_orders(request):
     order_items = OrderItem.objects.filter(order__status='N').values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
-    # raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
     raw_orders = Order.orders.raw()
 
     addresses = set(raw_orders.values_list('address', flat=True))

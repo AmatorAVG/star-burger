@@ -57,14 +57,6 @@ class OrderAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "restaurant":
 
-            # order_product_ids = list(OrderItem.objects.values_list('product', flat=True).filter(order_id=request.id_for_formfield))
-            # restaurant_menu = list(RestaurantMenuItem.objects.filter(product__in=order_product_ids, availability=True))
-            # burger_restaurant_ids = [{rest_item.restaurant.id for rest_item in restaurant_menu if product_id == rest_item.product_id} for product_id in order_product_ids]
-            #
-            # total_restaurant_ids = set.intersection(*burger_restaurant_ids)
-            #
-            # kwargs["queryset"] = Restaurant.objects.filter(id__in=total_restaurant_ids)
-
             kwargs["queryset"] = Restaurant.restaurants.available(request.id_for_formfield)
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
