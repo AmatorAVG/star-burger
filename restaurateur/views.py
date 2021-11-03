@@ -162,11 +162,11 @@ def view_orders(request):
             for rest in total_restaurants:
                 rest_coord = fetch_coordinates(YANDEX_KEY, rest.address, places_list)
                 if not rest_coord:
-                    order.restaurants.append([f'{rest} - адрес ресторана не найден', 999999])
+                    order.restaurants.append([f'{rest} - адрес ресторана не найден', float("inf")])
                     continue
                 order_coord = fetch_coordinates(YANDEX_KEY, order.address, places_list)
                 if not order_coord:
-                    order.restaurants.append([f'{rest} - адрес заказа не найден', 999999])
+                    order.restaurants.append([f'{rest} - адрес заказа не найден', float("inf")])
                     continue
                 order_dist = distance.distance(rest_coord, order_coord).km
                 order.restaurants.append([f'{rest} - {round(order_dist, 3)} км.', order_dist])
