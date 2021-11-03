@@ -145,10 +145,10 @@ def view_orders(request):
 
     raw_orders = Order.objects.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
 
-    adress_set = set(raw_orders.values_list('address', flat=True))
-    adress_set.update(set(Restaurant.objects.values_list('address', flat=True)))
+    addresses = set(raw_orders.values_list('address', flat=True))
+    addresses.update(set(Restaurant.objects.values_list('address', flat=True)))
 
-    places_list = list(Place.objects.filter(address__in=adress_set).values('address', 'coordinates_lat', 'coordinates_lng'))
+    places = list(Place.objects.filter(address__in=addresses).values('address', 'coordinates_lat', 'coordinates_lng'))
 
     for order in raw_orders:
         order_products_id = [product_id for order_id, product_id in order_items if order_id == order.id]
@@ -161,11 +161,11 @@ def view_orders(request):
             total_restaurants = set.intersection(*burger_restaurants)
 
             for rest in total_restaurants:
-                rest_coord = fetch_coordinates(YANDEX_KEY, rest.address, places_list)
+                rest_coord = fetch_coordinates(YANDEX_KEY, rest.address, places)
                 if not rest_coord:
                     order.restaurants.append([f'{rest} - адрес ресторана не найден', float("inf")])
                     continue
-                order_coord = fetch_coordinates(YANDEX_KEY, order.address, places_list)
+                order_coord = fetch_coordinates(YANDEX_KEY, order.address, places)
                 if not order_coord:
                     order.restaurants.append([f'{rest} - адрес заказа не найден', float("inf")])
                     continue
