@@ -43,8 +43,11 @@ class Restaurant(models.Model):
 
 
 class OrderQuerySet(models.QuerySet):
-    def raw(self):
-        return self.annotate(cost=Sum(F('order_items__cost'))).filter(status='N')
+    def unprocessed(self):
+        return self.filter(status='N')
+
+    def with_price(self):
+        return self.annotate(cost=Sum(F('order_items__cost')))
 
 
 class Order(models.Model):

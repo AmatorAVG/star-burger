@@ -105,14 +105,14 @@ def view_orders(request):
     order_items = OrderItem.objects.filter(order__status='N').values_list('order_id', 'product_id')
     restaurant_menu = list(RestaurantMenuItem.objects.filter(availability=True))
 
-    raw_orders = Order.orders.raw()
+    unprocessed_orders_with_price = Order.orders.with_price().unprocessed()
 
-    addresses = set(raw_orders.values_list('address', flat=True))
+    addresses = set(unprocessed_orders_with_price.values_list('address', flat=True))
     addresses.update(set(Restaurant.objects.values_list('address', flat=True)))
 
     places = list(Place.objects.filter(address__in=addresses).values('address', 'coordinates_lat', 'coordinates_lng'))
 
-    for order in raw_orders:
+    for order in unprocessed_orders_with_price:
         order_product_ids = [product_id for order_id, product_id in order_items if order_id == order.id]
 
         burger_restaurants = [{rest_item.restaurant for rest_item in restaurant_menu if product_id == rest_item.product_id}
@@ -136,5 +136,5 @@ def view_orders(request):
             order.restaurants.sort(key=lambda dist: dist[1])
 
     return render(request, template_name='order_items.html', context={
-       'order_items': raw_orders,
+       'order_items': unprocessed_orders_with_price,
     })
