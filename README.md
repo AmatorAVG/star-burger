@@ -91,7 +91,7 @@ npm --version
 Установите необходимые пакеты. В каталоге проекта запустите:
 
 ```sh
-npm install --dev
+npm install --only=dev
 ```
 
 Установите [Parcel](https://parceljs.org/). Это упаковщик веб-приложений. Он похож на [Webpack](https://webpack.js.org/), но совсем не требует настроек:
