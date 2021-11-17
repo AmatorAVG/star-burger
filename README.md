@@ -53,7 +53,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
+Создайте файл базы данных [PostgreSQL](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04) и отмигрируйте её следующей командой:
 
 ```sh
 python manage.py migrate
@@ -104,7 +104,7 @@ npm install -g parcel@latest  # понадобятся права админис
 
 ```sh
 $ parcel --version
-2.0.0-beta.2
+2.0.1
 ```
 
 Почти всё готово. Теперь запустите сборку фронтенда и не выключайте. Parcel будет работать в фоне и следить за изменениями в JS-коде:
@@ -145,7 +145,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_KEY` — API ключ, который можете получить в [кабинете разработчика](https://developer.tech.yandex.ru/). Данный ключ дает возможность программе поучать координаты ресторанов и заказчиков, для вычисления расстояния между ними.
 - `ROLLBAR_ACCESS_TOKEN` — токен системы логирования ROLLBAR, который можете получить после регистрации [на сайте](https://rollbar.com/), добавления проекта и выбора SDK - Django.
-
+- `DATABASE_URL` — строка подключения к БД вида postgres://USER:PASSWORD@HOST:PORT/NAME
 ## Цели проекта
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).

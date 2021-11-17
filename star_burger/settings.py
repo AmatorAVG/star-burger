@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'star_burger.wsgi.application'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-DATABASES = {"default": env.dj_db_url("DATABASE_URL")}
+DATABASES = {"default": env.dj_db_url('DATABASE_URL', 'postgres://starburgeruser:123@localhost/starburger')}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
