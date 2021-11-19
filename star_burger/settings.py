@@ -14,7 +14,7 @@ SECRET_KEY = env('SECRET_KEY', 'etirgvonenrfnoerngorenogneongg334g')
 DEBUG = env.bool('DEBUG', True)
 YANDEX_KEY = env('YANDEX_KEY')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost', '62.173.139.168'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost', '62.173.139.168', 'starburger.afrodita54.ru'])
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
