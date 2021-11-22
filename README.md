@@ -91,7 +91,7 @@ npm --version
 Установите необходимые пакеты. В каталоге проекта запустите:
 
 ```sh
-npm install --only=dev
+npm install --include=dev
 ```
 
 Установите [Parcel](https://parceljs.org/). Это упаковщик веб-приложений. Он похож на [Webpack](https://webpack.js.org/), но совсем не требует настроек:
@@ -142,10 +142,16 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
 - `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
-- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
+- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts).
 - `YANDEX_KEY` — API ключ, который можете получить в [кабинете разработчика](https://developer.tech.yandex.ru/). Данный ключ дает возможность программе поучать координаты ресторанов и заказчиков, для вычисления расстояния между ними.
 - `ROLLBAR_ACCESS_TOKEN` — токен системы логирования ROLLBAR, который можете получить после регистрации [на сайте](https://rollbar.com/), добавления проекта и выбора SDK - Django.
-- `DATABASE_URL` — строка подключения к БД вида postgres://USER:PASSWORD@HOST:PORT/NAME
+- `DATABASE_URL` — строка подключения к БД вида postgres://USER:PASSWORD@HOST:PORT/NAME.
+
+## Как обновить сайт
+
+- Перейти в каталог проекта
+- Запустить bash-скрипт deploy_star_burger.sh
+
 ## Цели проекта
 
 Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org). За основу был взят код проекта [FoodCart](https://github.com/Saibharath79/FoodCart).
