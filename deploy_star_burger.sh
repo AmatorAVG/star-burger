@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 git pull
 source env/bin/activate
 pip install -r requirements.txt
