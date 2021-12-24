@@ -153,7 +153,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 
 ## Как обновить сайт
 
-- Перейти в каталог проекта
+- Перейти в каталог проекта (cd /opt/star-burger/)
 - Запустить bash-скрипт deploy_star_burger.sh
 
 ## Цели проекта
