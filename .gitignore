@@ -1,8 +1,12 @@
 bundles/**
 node_modules/
 media/
+<<<<<<< HEAD
 staticfiles/
 
+=======
+dbtest.json
+>>>>>>> 054e3fc4948aa42af8ab80d8a8e1961cd2b3aa39
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
