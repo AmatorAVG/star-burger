@@ -10,8 +10,8 @@ npm install -g parcel@latest
 npm add @babel/runtime
 parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 python manage.py collectstatic --noinput
-python manage.py makemigrations
-python manage.py migrate
+python manage.py makemigrations --dry-run --check
+python manage.py migrate --noinput
 systemctl reload nginx.service
 systemctl restart starburger.service
 
