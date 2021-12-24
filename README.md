@@ -146,6 +146,7 @@ parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 - `YANDEX_KEY` — API ключ, который можете получить в [кабинете разработчика](https://developer.tech.yandex.ru/). Данный ключ дает возможность программе поучать координаты ресторанов и заказчиков, для вычисления расстояния между ними.
 - `ROLLBAR_ACCESS_TOKEN` — токен системы логирования ROLLBAR, который можете получить после регистрации [на сайте](https://rollbar.com/), добавления проекта и выбора SDK - Django.
 - `DATABASE_URL` — строка подключения к БД вида postgres://USER:PASSWORD@HOST:PORT/NAME.
+- `ROLLBAR_ENVIRONMENT` — название профиля, под которым разворачивается приложение. По умолчанию - "development".
 
 ## Как обновить сайт
 

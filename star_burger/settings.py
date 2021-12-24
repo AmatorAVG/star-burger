@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-SECRET_KEY = env('SECRET_KEY', 'etirgvonenrfnoerngorenogneongg334g')
+SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', True)
 YANDEX_KEY = env('YANDEX_KEY')
 
@@ -45,7 +45,7 @@ MIDDLEWARE = [
 
 ROLLBAR = {
     'access_token': env('ROLLBAR_ACCESS_TOKEN'),
-    'environment': 'development' if DEBUG else 'production',
+    'environment': env('ROLLBAR_ENVIRONMENT', 'development'),
     'root': BASE_DIR,
 }
 
