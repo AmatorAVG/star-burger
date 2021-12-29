@@ -14,14 +14,16 @@ python manage.py makemigrations --dry-run --check
 python manage.py migrate --noinput
 systemctl reload nginx.service
 systemctl restart starburger.service
-git add package-lock.json
-git add package.json
-git commit -m "modified package json"
 
 ACCESS_TOKEN=`cat .env | grep ACCESS_TOKEN= | cut -d '=' -f2`
 ENVIRONMENT=production
 LOCAL_USERNAME=root
 REVISION=`git rev-parse --verify HEAD`
 curl https://api.rollbar.com/api/1/deploy/ -F access_token=$ACCESS_TOKEN -F environment=$ENVIRONMENT -F revision=$REVISION -F local_username=$LOCAL_USERNAME
+
+set +e
+git add package.json
+git add package-lock.json
+git commit -m "modified package json"
 
 echo "Deploy completed successfully"
